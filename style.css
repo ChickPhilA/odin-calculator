@@ -19,3 +19,7 @@ body {
     border: 8px solid black;
     border-radius: 10px;
 }
+
+#display {
+    font-family: "Audiowide", sans-serif;
+}
