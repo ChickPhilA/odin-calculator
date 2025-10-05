@@ -11,15 +11,49 @@ body {
 .calculator {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-content: center;
 
     width: 400px;
     height: 600px;
     border: 8px solid black;
     border-radius: 10px;
+    background-color: Palegoldenrod;
 }
 
 #display {
     font-family: "Audiowide", sans-serif;
+
+    padding: 20px;
+    border: 4px solid black;
+    border-radius: 50px;
+    margin: 20px;
+    
+    background-color: white;
+}
+
+/* The selector below is for the container of all the buttons, but not the individual buttons */
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+
+    border: 4px solid blue;
+    border-
+}
+
+.buttons .button {
+    height: 80px;
+    width: 80px;
+
+    border-radius: 20px;
+    font-size: 50px;
+    
+}
+
+.button, .operator {
+    background-color: coral;
+}
+
+#multiply {
+    padding-top: 20px;
 }
