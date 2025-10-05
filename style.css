@@ -16,13 +16,16 @@ body {
 
     width: 400px;
     height: 600px;
-    border: 8px solid black;
-    border-radius: 10px;
+    border: 4px solid black;
+    border-radius: 30px;
+    padding: 10px;
+    box-shadow: 10px 10px 15px gray;
     background-color: Palegoldenrod;
 }
 
 #display {
-    font-family: "Audiowide", sans-serif;
+    font-family: "VT323", monospace;
+    font-size: 35px;
 
     padding: 20px;
     border: 4px solid black;
@@ -46,8 +49,14 @@ body {
     height: 80px;
     width: 80px;
 
-    border-radius: 50px;
+    border-radius: 30px;
     font-size: 50px;
+    box-shadow: 3px 3px 5px gray;
+}
+
+.button:active {
+    box-shadow: none;
+    transform: translate(2px, 3px);
 }
 
 .button.operator {
@@ -56,4 +65,14 @@ body {
 
 #multiply {
     padding-top: 20px;
+}
+
+.button#clear {
+    background-color: lightcoral;
+    width: 170px;
+}
+
+.button#equals {
+    background-color: lightgreen;
+    width: 170px;
 }
