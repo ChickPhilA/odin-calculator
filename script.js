@@ -1,7 +1,11 @@
 let num1 = 0
 let num2 = 0
+let finalValue = 0
 let operator = ""
 let displayValue = ""
+let firstOperation = false /* a flag for if the calculator has not pressed a single operation button in its runtime yet, turn this flag on.
+when this flag is on, any other button pressed to operate on will compute num1 and num2. */
+
 let operatorOn = false // flag boolean value if the last button pressed was an operator.
 
 let display = document.getElementById("display")
@@ -50,6 +54,22 @@ function operate(operator, a, b) {
     }
 }
 
+/* A function to highlight the operator button when pressed
+function highlightOperator() {
+
+}
+*/
+
+function resetCalculatorMemory() {
+    num1 = 0
+    num2 = 0
+    finalValue = 0
+    operator = ""
+    displayValue = ""
+    display.textContent = displayValue
+    firstOperation = false
+    operatorOn = false
+}
 
 function updateDisplay(button) {
 
@@ -59,6 +79,7 @@ function updateDisplay(button) {
     if(displayValue == "") {
         // if the button is a number... go ahead and add it
         if(!isNaN(button.textContent)) {
+            console.log("Adding a digit to the display.")
             displayValue += button.textContent
             display.textContent = displayValue
             return
@@ -66,8 +87,7 @@ function updateDisplay(button) {
 
         if(button.id === "clear") {
             console.log("Clearing an empty display (still valid, for purity purposes)")
-            displayValue = ""
-            display.textContent = displayValue
+            resetCalculatorMemory()
             return
         }
 
@@ -88,13 +108,19 @@ function updateDisplay(button) {
     else {
         if(button.id === "clear") {
             console.log("Clearing a display with content!")
-            displayValue = ""
-            display.textContent = displayValue
+            resetCalculatorMemory()
             return
         }
 
         // Case 1: a digit button
         if(!isNaN(button.textContent)) {
+            // in the case where the last button was pressed was an operator.
+            if(operatorOn === true) {
+                console.log("Switching from operator to digit boolean.")
+                operatorOn = false
+                displayValue = ""
+            }
+            
             console.log("Adding a digit to the display.")
             displayValue += button.textContent
             display.textContent = displayValue
@@ -103,8 +129,22 @@ function updateDisplay(button) {
 
         // Case 2: an operator button
         if(button.classList.contains("operator")) {
+            if(firstOperation === false) {
+                console.log("First operation has been performed.")
+                console.log("The display value is: " + displayValue)
+
+                firstOperation = true
+                operatorOn = true    
+
+                num1 = displayValue
+                operator = button.textContent
+                console.log("Storing " + operator + " in the operator variable!")
+                return
+            }
+
+            // this goes for anything after the first operation. 
             if(operatorOn === false) {
-                operatorOn === true
+                operatorOn = true
                 operator = button.textContent
                 console.log("Storing " + operator + " in the operator variable!")
             }
@@ -112,6 +152,24 @@ function updateDisplay(button) {
                 alert("You cannot stack one operator on top of another!")
                 return
             }
+        }
+
+        if(button.id === "equals") {
+            num2 = displayValue
+
+            // edge cases
+            if(operator === "/" && Number(num2) === 0) {
+                alert("Error! You cannot divide by zero! Resetting calculator memory...")
+                resetCalculatorMemory()
+                display.textContent = "ERROR: DIVIDE BY 0"
+                return
+            }
+
+            finalValue = operate(operator, Number(num1), Number(num2))
+            console.log(finalValue)
+
+            displayValue = finalValue
+            display.textContent = displayValue
         }
     }
 }
