@@ -3,10 +3,15 @@ let num2 = 0
 let finalValue = 0
 let operator = ""
 let displayValue = ""
+
+
+// Flags below
 let firstOperation = false /* a flag for if the calculator has not pressed a single operation button in its runtime yet, turn this flag on.
 when this flag is on, any other button pressed to operate on will compute num1 and num2. */
 
 let operatorOn = false // flag boolean value if the last button pressed was an operator.
+let activeResult = false // flag for if the equals sign button has been previously been pressed, making a computation.
+
 
 let display = document.getElementById("display")
 let buttons = document.querySelectorAll("button")
@@ -31,24 +36,22 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-    // Case to handle dividing by zero
-    if(a / b == 0) {
-        return "Error"
-    }
-
     return a / b
 }
 
 function operate(operator, a, b) {
+    let numA = parseFloat(a)
+    let numB = parseFloat(b)
+
     switch(operator) {
         case "+":
-            return add(a, b)
+            return add(numA, numB)
         case "-":
-            return subtract(a, b)
+            return subtract(numA, numB)
         case "*":
-            return multiply(a, b)
+            return multiply(numA, numB)
         case "/":
-            return divide(a, b)
+            return divide(numA, numB)
         default:
             return null
     }
@@ -69,6 +72,7 @@ function resetCalculatorMemory() {
     display.textContent = displayValue
     firstOperation = false
     operatorOn = false
+    activeResult = false
 }
 
 function updateDisplay(button) {
@@ -76,10 +80,15 @@ function updateDisplay(button) {
     // Walk through two scenarios:
     // 1) If the display is empty, we can only add numbers
     // 2) If the display is not empty, we can add numbers or operators
+
+
+
+     /////////////// CASE WHERE DISPLAY IS EMPTY ///////////////
     if(displayValue == "") {
+
         // if the button is a number... go ahead and add it
         if(!isNaN(button.textContent)) {
-            console.log("Adding a digit to the display.")
+            console.log("[CASE 1] Adding the digit " + button.textContent + " to the display.")
             displayValue += button.textContent
             display.textContent = displayValue
             return
@@ -97,79 +106,104 @@ function updateDisplay(button) {
             return
         }
         else {
-            console.log("hello world\n")
             alert("There are no numbers yet in the display!")
             return
         }
     }
 
 
-    // The case where the display is NOT empty
+
+    /////////////// CASE WHERE DISPLAY IS NOT EMPTY ///////////////
     else {
         if(button.id === "clear") {
-            console.log("Clearing a display with content!")
+            console.log("[CASE 2.1]: Clearing a display with content!")
             resetCalculatorMemory()
             return
         }
 
-        // Case 1: a digit button
+
+
+
+        // a NUMBER/DIGIT
         if(!isNaN(button.textContent)) {
+            
             // in the case where the last button was pressed was an operator.
             if(operatorOn === true) {
-                console.log("Switching from operator to digit boolean.")
+                console.log("[CASE 2.21: Switching from operator to digit boolean.")
                 operatorOn = false
                 displayValue = ""
             }
+
+            // if the finalResult variable currently has a value. (?)
+            if(activeResult === true) {
+                display.textContent = ""
+                console.log("[CASE 2.22: Entering a digit again after completing a computation.")
+
+                num1 = finalValue // storing the previous final answer in num1 if stacking computations
+                displayValue = button.textContent
+                display.textContent += displayValue
+
+                activeResult = false
+                return
+            }
             
-            console.log("Adding a digit to the display.")
+            console.log("[CASE 2.23] Adding the digit " + button.textContent + " to the display.")
             displayValue += button.textContent
             display.textContent = displayValue
             return
         }
 
-        // Case 2: an operator button
+
+
+
+
+        // an operator button (+ - x /) has been pressed. (case 2.3)
         if(button.classList.contains("operator")) {
-            if(firstOperation === false) {
-                console.log("First operation has been performed.")
+
+            // BOOLEAN FLAG PERFORMING VERIFYING THE VERY FIRST OPERATION.
+            if(firstOperation === false && activeResult === false) {
+                console.log("[CASE 2.31]: First operation has been performed.")
                 console.log("The display value is: " + displayValue)
 
                 firstOperation = true
                 operatorOn = true    
 
-                num1 = displayValue
+                num1 = parseFloat(displayValue)
+
                 operator = button.textContent
                 console.log("Storing " + operator + " in the operator variable!")
                 return
             }
 
-            // this goes for anything after the first operation. 
-            if(operatorOn === false) {
-                operatorOn = true
-                operator = button.textContent
-                console.log("Storing " + operator + " in the operator variable!")
-            }
-            else {
-                alert("You cannot stack one operator on top of another!")
-                return
-            }
         }
 
-        if(button.id === "equals") {
-            num2 = displayValue
 
-            // edge cases
-            if(operator === "/" && Number(num2) === 0) {
+
+
+
+        // when the equals button is pressed
+        if(button.id === "equals") {
+            console.log("--- [CASE 2.5]: STARTING EQUALS ---");
+            console.log("num1 BEFORE calculation: " + num1); // Check this value
+            console.log("displayValue (for num2) BEFORE calculation: " + displayValue); // Check this value
+
+
+            num2 = parseFloat(displayValue) // finally stores the second number being computed
+
+            // edge cases (e.g. dividing by 0)
+            if(operator === "/" && num2 === 0) {
                 alert("Error! You cannot divide by zero! Resetting calculator memory...")
                 resetCalculatorMemory()
                 display.textContent = "ERROR: DIVIDE BY 0"
                 return
             }
 
-            finalValue = operate(operator, Number(num1), Number(num2))
-            console.log(finalValue)
+            finalValue = operate(operator, num1, num2)
+            console.log("The FINAL VALUE after the operation is " + finalValue)
 
             displayValue = finalValue
             display.textContent = displayValue
+            activeResult = true
         }
     }
 }
