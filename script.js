@@ -174,7 +174,7 @@ function updateDisplay(button) {
             console.log("[CASE 2.32]: Stacking operators on top of each other")            
             num2 = displayValue
 
-            finalValue = operate(operator, num1, num2)
+            finalValue = Math.round(operate(operator, num1, num2))
             num1 = finalValue // stores the finalValue in num1 for the next operation
             displayValue = finalValue
             display.textContent = displayValue
@@ -218,7 +218,7 @@ function updateDisplay(button) {
 
             console.log("We are about to do our equals calculation. Num1 is " + num1 + " and num2 is " + num2)
 
-            finalValue = operate(operator, num1, num2)
+            finalValue = Math.round(operate(operator, num1, num2))
             console.log("The FINAL VALUE after the operation is " + finalValue)
 
             displayValue = finalValue
