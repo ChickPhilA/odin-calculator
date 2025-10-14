@@ -84,3 +84,9 @@ body {
     background-color: lightgreen;
     width: 170px;
 }
+
+.highlighted-operator {
+    box-shadow: none;
+    background-color: red;
+    transform: translate(2px, 3px);
+}

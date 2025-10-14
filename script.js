@@ -15,6 +15,9 @@ let equalsLastPressed = false // flag for if the equals sign button has been pre
 
 let display = document.getElementById("display")
 let buttons = document.querySelectorAll("button")
+let op = document.querySelectorAll(".operator")
+let currentHighlightedOperator = null // to keep track of the currently highlighted operator
+
 
 // Adds an event listener to ALL buttons on the calculator
 buttons.forEach((button) => {
@@ -56,12 +59,6 @@ function operate(operator, a, b) {
             return null
     }
 }
-
-/* A function to highlight the operator button when pressed
-function highlightOperator() {
-
-}
-*/
 
 function resetCalculatorMemory() {
     num1 = 0
@@ -194,6 +191,17 @@ function updateDisplay(button) {
             console.log("num1 BEFORE calculation: " + num1); // Check this value
             console.log("displayValue (for num2) BEFORE calculation: " + displayValue); // Check this value
 
+            if(equalsLastPressed === false) {
+                num2 = parseFloat(displayValue) // finally stores the second number being computed
+                lastOperand = num2
+                equalsLastPressed = true
+            }
+            else { // repeatedly pressing equals
+                num2 = lastOperand
+                equalsLastPressed = false 
+            }
+            
+
             if(operator === "" || num2 === undefined) {
                 alert("[ERROR] Operation build not complete! Resetting memory...")
                 resetCalculatorMemory()
@@ -208,18 +216,7 @@ function updateDisplay(button) {
                 return
             }
 
-            // lastOperand = num2
             console.log("We are about to do our equals calculation. Num1 is " + num1 + " and num2 is " + num2)
-    
-            if(equalsLastPressed === false) {
-                num2 = parseFloat(displayValue) // finally stores the second number being computed
-                lastOperand = num2
-                equalsLastPressed = true
-            }
-            else { // repeatedly pressing equals
-                num2 = lastOperand
-                equalsLastPressed = false 
-            }
 
             finalValue = operate(operator, num1, num2)
             console.log("The FINAL VALUE after the operation is " + finalValue)
